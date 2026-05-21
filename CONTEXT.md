@@ -43,30 +43,30 @@ The processing of any incoming bug report follows a strict, validated, and seque
  [Enriched Insight Report]
 ```
 
-a. Ingress & Sanitization: The raw report passes through input guards to prevent prompt injections and infrastructure data leaks.
+a. **Ingress & Sanitization**: The raw report passes through input guards to prevent prompt injections and infrastructure data leaks.
 
-b. Normalization: The query is rewritten to strip out irrelevant technical noise and optimize semantic vector search matching.
+b. **Norm**alization: The query is rewritten to strip out irrelevant technical noise and optimize semantic vector search matching.
 
-c. External Retrieval (RAG): The system queries historical bug records, closed issues, and deployment metadata.
+c. **External Retrieval (RAG)**: The system queries historical bug records, closed issues, and deployment metadata.
 
-d. Code Inspection: The agent accesses the source code repository, surgically scoping down its visibility to the files relevant to the error stack trace.
+d. **Code Inspection**: The agent accesses the source code repository, surgically scoping down its visibility to the files relevant to the error stack trace.
 
-e. Context Qualification: The context is validated for accuracy and relevance before generating the final engineer-facing assessment.
+e. **Context Qualification**: The context is validated for accuracy and relevance before generating the final engineer-facing assessment.
 
 ## 4. Project Glossary
 
-- Raw Bug Report: Unstructured text payloads originating from Jenkins/GitHub Actions logs, Jira tickets, GitHub Issues, or raw stack traces.
+* **Raw Bug Report**: Unstructured text payloads originating from Jenkins/GitHub Actions logs, Jira tickets, GitHub Issues, or raw stack traces.
 
-- Golden Dataset: A curated, human-verified static testing dataset containing historical pairs of (Bug -> Correct Diagnostic). Used for quantitative offline evaluation of the AI pipeline.
+* **Golden Dataset**: A curated, human-verified static testing dataset containing historical pairs of (Bug -> Correct Diagnostic). Used for quantitative offline evaluation of the AI pipeline.
 
-- Semantic Cache: An optimization layer that stores previously resolved inquiries based on semantic meaning rather than exact string matching, minimizing latency and LLM token usage.
+* **Semantic Cache**: An optimization layer that stores previously resolved inquiries based on semantic meaning rather than exact string matching, minimizing latency and LLM token usage.
 
-- Document Grader: A logical orchestration component that acts as a quality control gate, scoring the relevance of retrieved code fragments or historical docs against the core problem.
+* **Document Grader**: A logical orchestration component that acts as a quality control gate, scoring the relevance of retrieved code fragments or historical docs against the core problem.
 
 ## 5. Success Criteria & Constraints
 
-- Evaluation Determinism: System modifications must be quantitatively evaluated. No architectural or prompt change will be merged without passing the evaluation pipeline against the Golden Dataset.
+* **Evaluation Determinism**: System modifications must be quantitatively evaluated. No architectural or prompt change will be merged without passing the evaluation pipeline against the Golden Dataset.
 
-- Context Window Management: No agent may saturate the LLM context window with entire codebases; code retrieval must be highly targeted and paginated.
+* **Context Window Management**: No agent may saturate the LLM context window with entire codebases; code retrieval must be highly targeted and paginated.
 
-- Security by Design: The system will operate strictly as an analytical advisor. It will not execute native shell code or push direct commits to the main branch without Human-in-the-Loop (HITL) approval.
+* **Security by Design**: The system will operate strictly as an analytical advisor. It will not execute native shell code or push direct commits to the main branch without Human-in-the-Loop (HITL) approval.
