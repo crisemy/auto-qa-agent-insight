@@ -41,6 +41,7 @@ The processing of any incoming bug report follows a strict, validated, and seque
          │
          ▼
  [Enriched Insight Report]
+```
 
 a. Ingress & Sanitization: The raw report passes through input guards to prevent prompt injections and infrastructure data leaks.
 
