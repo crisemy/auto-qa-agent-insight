@@ -25,8 +25,8 @@ Constraints:
 
 ### Required Capabilities for Triage & Router Agent
 
-* **Query_Rewriter**: Capability to strip timestamp/PID noise from stack traces to extract clean error signatures.
-* **Semantic_Cache_Lookup**: Route check to verify if an identical signature was processed recently.
+- **Query_Rewriter**: Capability to strip timestamp/PID noise from stack traces to extract clean error signatures.
+- **Semantic_Cache_Lookup**: Route check to verify if an identical signature was processed recently.
 
 ## 2. Root-Cause Analyzer (RCA) Agent
 
@@ -49,8 +49,8 @@ Constraints:
 
 ### Required Capabilities for Root-Cause Analyzer (RCA) Agent
 
-* **Code_Search_Vector_Retrieval**: Similarity search on codebase embeddings.
-* **Repository_File_Reader**: Surgical file retrieval tool to read precise line ranges of targeted files.
+- **Code_Search_Vector_Retrieval**: Similarity search on codebase embeddings.
+- **Repository_File_Reader**: Surgical file retrieval tool to read precise line ranges of targeted files.
 
 ## 3. Remediation & Patch Agent
 
@@ -73,7 +73,7 @@ Constraints:
 
 ### Required Capabilities for Remediation & Patch Agent
 
-* **Web_Search (Optional/Restricted)**: For looking up official documentation on specific error codes or framework deprecations.
+- **Web_Search (Optional/Restricted)**: For looking up official documentation on specific error codes or framework deprecations.
 
 ## 4. Document & Context Grader (The Quality Gate)
 
@@ -94,11 +94,11 @@ Constraints:
 
 ### Required Capabilities for Document & Context Grader (The Quality Gate)
 
-* None. This is a pure reasoning agent acting as an inline assertion checkpoint.
+- None. This is a pure reasoning agent acting as an inline assertion checkpoint.
 
 ## 5. Collaboration and Boundaries
 
 To prevent cascading errors and runaway token usage, agents interact through structured data contracts rather than raw text generation:
 
-* **State Machine Isolation**: No agent can freely invoke another agent in an infinite loop. The state transition is managed by the application logic (adaptive_router.py), not by the LLM's whim.
-* **Deterministic Fallbacks**: If the Document Grader rejects the retrieved context twice, the system breaks out of the loop and outputs a graceful failure message ("Insufficient context to safely diagnose this error"), instead of letting the agents hallucinate a fix.
+- **State Machine Isolation**: No agent can freely invoke another agent in an infinite loop. The state transition is managed by the application logic (adaptive_router.py), not by the LLM's whim.
+- **Deterministic Fallbacks**: If the Document Grader rejects the retrieved context twice, the system breaks out of the loop and outputs a graceful failure message ("Insufficient context to safely diagnose this error"), instead of letting the agents hallucinate a fix.

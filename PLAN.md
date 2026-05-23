@@ -40,9 +40,9 @@ Goal: Replace all stubs and simulated components with real infrastructure — ve
 ### Task 5.1 — FAISS Vector Store for Historical Bug Embeddings
 
 - [ ] Add `sentence-transformers` and `faiss-cpu` to `pyproject.toml`.
-- [ ] Implement `app/components/vector_store.py` with functions:
-  - `index_bugs(bugs: list[dict])` — embeds bug signatures and stores in FAISS index.
-  - `search(query: str, k: int) -> list[str]` — returns top-k similar bug IDs.
+- [ ] Implement `app/components/vector_store.py` with:
+  - `index_bugs(bugs)` — embeds bug signatures and stores in FAISS index.
+  - `search(query, k)` — returns top-k similar bug IDs.
 - [ ] Seed the index with the 10 golden dataset entries on startup.
 - [ ] Replace in-memory search in `hybrid_retriever.py` with real FAISS vector search + BM25 keyword fallback.
 - [ ] Write tests in `tests/test_vector_store.py`.
@@ -64,7 +64,11 @@ Goal: Replace all stubs and simulated components with real infrastructure — ve
 
 ### Task 5.4 — CI/CD Pipeline
 
-- [ ] Create `.github/workflows/ci.yml` with jobs: lint (`ruff`), typecheck (`mypy`), test (`pytest`), evaluate (`offline_eval.py` — fail if < 100%).
+- [ ] Create `.github/workflows/ci.yml` with jobs:
+  - **lint** — `ruff check .`
+  - **typecheck** — `mypy app/`
+  - **test** — `pytest tests/ -v`
+  - **evaluate** — `uv run python3 evaluation/offline_eval.py` (fails if < 100% pass rate)
 - [ ] Create `.github/workflows/publish.yml` to build and publish to PyPI on tagged releases.
 
 ### Task 5.5 — API Endpoints for Direct Submission
@@ -78,6 +82,6 @@ Goal: Replace all stubs and simulated components with real infrastructure — ve
 
 For any task in this document to be marked as complete, it must meet the following criteria:
 
-* Linting & Code Quality: Code complies with clean architectural standards, passes static analysis checking, and includes descriptive type hinting.
-* Robust Exception Coverage: Network failures, bad authentication, and rate exhaustion scenarios are explicitly accounted for and gracefully handled without throwing an unhandled trace dump.
-* No Hardcoded Configurations: All structural endpoint variations must reside entirely inside environment configurations or decoupled static resource JSON registries.
+- Linting & Code Quality: Code complies with clean architectural standards, passes static analysis checking, and includes descriptive type hinting.
+- Robust Exception Coverage: Network failures, bad authentication, and rate exhaustion scenarios are explicitly accounted for and gracefully handled without throwing an unhandled trace dump.
+- No Hardcoded Configurations: All structural endpoint variations must reside entirely inside environment configurations or decoupled static resource JSON registries.
