@@ -7,10 +7,10 @@ An enterprise-grade, production-ready AI Engineering framework designed to autom
 The framework avoids fragile, unstructured conversational loops by implementing a deterministic, sequential multi-agent processing pipeline protected by security and quality guardrails.
 
 ```text
- [Raw Bug Report] -> [Input Guard] -> [Query Rewriter] -> [Hybrid Search + Rerank]
-                                                                  │
- [Enriched Report] <- [Output Filter] <- [Document Grader] <- [Code Forensics Agent]
- ```
+[Raw Bug Report] -> [Input Guard] -> [Query Rewriter] -> [Hybrid Search + Rerank]
+                                                                      │
+[Enriched Report] <- [Output Filter] <- [Document Grader] <- [Code Forensics Agent]
+```
 
 ## Key Architectural Pillars
 
