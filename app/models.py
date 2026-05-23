@@ -20,6 +20,10 @@ class RawBugReport(BaseModel):
     source: str = "unknown"
 
 
+class QueryRewriterInput(BaseModel):
+    raw_log_payload: str
+
+
 class QueryRewriterOutput(BaseModel):
     normalized_signature: str
     extracted_exception_type: str
@@ -30,6 +34,12 @@ class TriageResult(BaseModel):
     failing_module: str
     normalized_signature: str
     exception_type: str
+
+
+class SearchHistoricalBugsInput(BaseModel):
+    cleaned_error_signature: str
+    target_subsystem: str
+    limit: int = 5
 
 
 class HistoricalBugMatch(BaseModel):
@@ -48,13 +58,29 @@ class RerankDocument(BaseModel):
     metadata: dict = {}
 
 
+class RerankContextDocumentsInput(BaseModel):
+    query: str
+    documents: list[RerankDocument]
+
+
 class RerankContextDocumentsOutput(BaseModel):
     ordered_documents: list[RerankDocument]
     relevance_cutoff_applied: bool
 
 
+class LocateTargetFilesInput(BaseModel):
+    file_hints: list[str]
+    extension_whitelist: list[str]
+
+
 class LocateTargetFilesOutput(BaseModel):
     verified_file_paths: list[str]
+
+
+class ReadCodeBlockSurgicallyInput(BaseModel):
+    file_path: str
+    start_line: int
+    end_line: int
 
 
 class ReadCodeBlockSurgicallyOutput(BaseModel):
@@ -75,6 +101,10 @@ class RemediationResult(BaseModel):
     explanation: str
 
 
+class CheckSemanticCacheInput(BaseModel):
+    normalized_signature: str
+
+
 class SemanticCacheEntry(BaseModel):
     normalized_signature: str
     report: str
@@ -83,6 +113,27 @@ class SemanticCacheEntry(BaseModel):
 class CheckSemanticCacheOutput(BaseModel):
     cache_hit: bool
     cached_report: str | None = None
+
+
+class SkillError(BaseModel):
+    error: str
+    fallback_action: str
+
+
+class InputGuardResult(BaseModel):
+    is_safe: bool
+    risk_score: float
+    flagged_patterns: list[str]
+
+
+class OutputFilterResult(BaseModel):
+    is_valid: bool
+    issues: list[str]
+
+
+class GraderResult(BaseModel):
+    relevance_score: float
+    is_relevant: bool
 
 
 class EnrichedInsightReport(BaseModel):

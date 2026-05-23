@@ -1,0 +1,102 @@
+[
+  {
+    "id": "BUG-001",
+    "payload": "CRITICAL: database connection pool exhausted at app/db/connection.py:152 — TimeoutError",
+    "expected": {
+      "severity": "Critical",
+      "failing_module": "app/db/connection.py",
+      "exception_type": "TimeoutError",
+      "diagnostic_summary": "connection pool exhausted"
+    }
+  },
+  {
+    "id": "BUG-002",
+    "payload": "RateLimitError: API quota exceeded for user_123 on endpoint /v2/chat/completions",
+    "expected": {
+      "severity": "Major",
+      "failing_module": "unknown",
+      "exception_type": "RateLimitError",
+      "diagnostic_summary": "API quota exceeded"
+    }
+  },
+  {
+    "id": "BUG-003",
+    "payload": "KeyError: 'user_id' not found in request payload at app/api/validator.py:87",
+    "expected": {
+      "severity": "Major",
+      "failing_module": "app/api/validator.py",
+      "exception_type": "KeyError",
+      "diagnostic_summary": "missing required field user_id"
+    }
+  },
+  {
+    "id": "BUG-004",
+    "payload": "TypeError: unsupported operand type(s) for +: 'NoneType' and 'int' at app/services/calculator.py:23",
+    "expected": {
+      "severity": "Major",
+      "failing_module": "app/services/calculator.py",
+      "exception_type": "TypeError",
+      "diagnostic_summary": "null value propagated in arithmetic"
+    }
+  },
+  {
+    "id": "BUG-005",
+    "payload": "WARNING: deprecation — app/utils/legacy.py uses v1 API which will be removed in v3.0",
+    "expected": {
+      "severity": "Minor",
+      "failing_module": "app/utils/legacy.py",
+      "exception_type": "",
+      "diagnostic_summary": "deprecated API usage"
+    }
+  },
+  {
+    "id": "BUG-006",
+    "payload": "FileNotFoundError: config.yaml not found at /etc/app/config.yaml",
+    "expected": {
+      "severity": "Minor",
+      "failing_module": "unknown",
+      "exception_type": "FileNotFoundError",
+      "diagnostic_summary": "missing configuration file"
+    }
+  },
+  {
+    "id": "BUG-007",
+    "payload": "AuthenticationError: invalid API key provided for service groq in app/services/auth.py:12",
+    "expected": {
+      "severity": "Critical",
+      "failing_module": "app/services/auth.py",
+      "exception_type": "AuthenticationError",
+      "diagnostic_summary": "invalid API key"
+    }
+  },
+  {
+    "id": "BUG-008",
+    "payload": "MemoryWarning: heap usage at 92% in worker process 7 at app/workers/processor.py:201",
+    "expected": {
+      "severity": "Minor",
+      "failing_module": "app/workers/processor.py",
+      "exception_type": "MemoryWarning",
+      "diagnostic_summary": "high memory usage"
+    }
+  },
+  {
+    "id": "BUG-009",
+    "payload": "503 Service Unavailable: upstream connect error on /api/v2/orders at proxy/gateway.py:44",
+    "expected": {
+      "severity": "Critical",
+      "failing_module": "proxy/gateway.py",
+      "exception_type": "",
+      "diagnostic_summary": "upstream service unavailable"
+    }
+  },
+  {
+    "id": "BUG-010",
+    "payload": "ValidationError: field 'email' does not match regex pattern at app/schemas/user.py:33",
+    "expected": {
+      "severity": "Major",
+      "failing_module": "app/schemas/user.py",
+      "exception_type": "ValidationError",
+      "diagnostic_summary": "field validation failure"
+    }
+  }
+]

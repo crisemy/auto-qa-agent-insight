@@ -8,7 +8,7 @@ The framework avoids fragile, unstructured conversational loops by implementing 
 
 ```text
 [Raw Bug Report] -> [Input Guard] -> [Query Rewriter] -> [Hybrid Search + Rerank]
-                                                                      │
+                                                                    │
 [Enriched Report] <- [Output Filter] <- [Document Grader] <- [Code Forensics Agent]
 ```
 
@@ -22,73 +22,142 @@ The framework avoids fragile, unstructured conversational loops by implementing 
 ## Project Structure
 
 ```text
-production-ai-app/
+auto-qa-agent-insights/
 ├── app/
-│   ├── main.py                 # FastAPI entry point
-│   ├── config.py               # Pydantic environment configuration
-│   ├── models.py               # Strict Pydantic data schemas
-│   ├── components/             # Retrieval & optimization layers (Retriever, Reranker)
-│   ├── services/               # Core workflow logic (Query routing, semantic cache)
-│   ├── agents/                 # Specialized agent personas and micro-tools
-│   └── security/               # Ingress/egress guardrails (Prompt injection defense)
-├── evaluation/                 # Testing datasets and offline metric evaluators
-├── observability/              # Token monitoring, cost logging, and tracing
-├── data/                       # Local vector indexes and raw/processed assets
-└── tests/                      # Pytest automation suite for CI/CD readiness
+│   ├── main.py                 # FastAPI entry point with /health
+│   ├── config.py               # Pydantic Settings (env vars)
+│   ├── models.py               # Strict Pydantic data schemas (SKILLS.md contracts)
+│   ├── components/
+│   │   ├── hybrid_retriever.py # Keyword + vector search (SKILLS.md §1.1)
+│   │   └── reranker.py         # Cross-encoder context reranking (SKILLS.md §1.2)
+│   ├── services/
+│   │   ├── query_rewriter.py   # Strips noise from raw logs (SKILLS.md §3.1)
+│   │   ├── semantic_cache.py   # Cache lookup stub (SKILLS.md §3.2)
+│   │   └── query_router.py     # State machine connecting agents (AGENTS.md §5)
+│   ├── agents/
+│   │   ├── triage_agent.py     # Severity classification, module extraction
+│   │   ├── rca_agent.py        # Code forensics, failure pinpointing
+│   │   ├── remediation_agent.py# Patch generation
+│   │   ├── grader_agent.py     # Relevance scoring gate
+│   │   └── tools/
+│   │       └── code_search.py  # Surgical file line scanning (SKILLS.md §2)
+│   └── security/
+│       ├── input_guard.py      # Prompt injection detection
+│       └── output_filter.py    # Structured output validation
+├── evaluation/
+│   ├── golden_dataset.json     # 10 curated bug-diagnostic pairs
+│   └── offline_eval.py         # Runs pipeline against dataset, reports metrics
+├── observability/
+│   └── cost_tracker.py         # Token usage estimation & JSONL logging
+├── tests/
+│   ├── test_retrieval.py       # Rewriter, retriever, reranker tests
+│   ├── test_agents.py          # All 4 agent runtime tests
+│   └── test_security.py        # Input guard & output filter tests
+├── CONTEXT.md                  # Business domain & glossary
+├── AGENTS.md                   # Agent personas & system prompts
+├── SKILLS.md                   # JSON contracts for every tool
+├── CORE.md                     # Engineering methodology (CDD)
+├── PLAN.md                     # Iteration roadmap
+├── Dockerfile
+├── docker-compose.yml
+├── pyproject.toml
+├── .env.example
+└── .gitignore
 ```
 
-## Prerequisites & Installation
+## Prerequisites
 
-Technical Stack
+- Python >= 3.11
+- pip or uv
 
-* Runtime: Python >= 3.11
-* Frameworks: FastAPI, Pydantic v2, Pydantic Settings
-* Orchestration: LangChain Core (Type-Safe Interface Structural Design)
-* Vector Vector Space: Local FAISS / Numpy (for portfolio portability)
+## Quick Start
 
-### Local Deployment
-
-* Clone the repository:
+### 1. Install
 
 ```bash
-git clone [https://github.com/your-username/auto-qa-agent-insights.git](https://github.com/your-username/auto-qa-agent-insights.git)
-cd auto-qa-agent-insights
-```
-
-* Install dependencies using modern build system conventions:
-
-```bash
-pip install .
-# For development dependencies (testing, linting)
+# Using pip
 pip install -e ".[dev]"
+
+# Or using uv
+uv sync --dev
 ```
 
-* Configure environment variables:
-Create a .env file in the root directory:
+### 2. Configure Environment
 
 ```bash
-ENVIRONMENT=development
-OPENAI_API_KEY=your_actual_api_key_here
-LLM_MODEL=gpt-4o-mini
+cp .env.example .env
+# Then edit .env with your values:
+#   ENVIRONMENT=development
+#   OPENAI_API_KEY=your_key_here
+#   LLM_MODEL=gpt-4o-mini
 ```
 
-* Execute the application service:
+### 3. Run Unit Tests (25 tests)
+
+```bash
+pytest tests/ -v
+```
+
+### 4. Run Offline Evaluation (10 golden dataset cases)
+
+```bash
+# With pip:
+PYTHONPATH=. python3 evaluation/offline_eval.py
+
+# With uv:
+uv run python3 evaluation/offline_eval.py
+```
+
+Expected output:
+```
+  Total cases:  10
+  Passed:       10
+  Pass rate:    100%
+  Severity accuracy:  100%
+  Module hit rate:    100%
+  Exception accuracy: 100%
+```
+
+### 5. Test the Full Pipeline End-to-End
+
+```bash
+uv run python3 -c "
+from app.models import RawBugReport
+from app.services.query_router import process
+
+# Test with a real project file
+report = RawBugReport(payload='TypeError at app/models.py:42: unsupported operand type for NoneType')
+result = process(report)
+print(result)
+"
+```
+
+### 6. Start the API Server
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-## Testing & Evaluation Pipeline
-
-* Running Unit Tests:
+Then in another terminal:
 
 ```bash
-pytest tests/
+curl localhost:8000/health
+# {"status":"ok","environment":"development"}
 ```
 
-* Executing Offline AI Evaluation
-To measure the semantic accuracy of the system against a static, human-curated benchmark:
+### 7. Docker (optional)
 
 ```bash
-python scripts/evaluate.py
+cp .env.example .env
+docker compose up --build
 ```
+
+## Project Specification Documents
+
+| Document | Purpose |
+|----------|---------|
+| `CONTEXT.md` | Business domain, glossary, success criteria |
+| `AGENTS.md` | Agent personas, system prompts, capability contracts |
+| `SKILLS.md` | Input/output JSON schemas for every tool |
+| `CORE.md` | Engineering methodology (CDD, determinism, golden dataset) |
+| `PLAN.md` | Iteration roadmap with task tracking |
