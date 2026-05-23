@@ -14,10 +14,10 @@ The framework avoids fragile, unstructured conversational loops by implementing 
 
 ## Key Architectural Pillars
 
-* Context-Driven Design: The system's rules, agents, and tool signatures are explicitly declared in Markdown specifications (CONTEXT.md, AGENTS.md, SKILLS.md) before implementation, ensuring high alignment and minimal token waste.
-* Surgical Code Forensics: Rather than saturating context windows with whole source files, specialized tools target exact line ranges extracted from stack traces.
-* Deterministic Quality Gates: An internal Document Grader evaluates context relevance before generation, applying a hard circuit-breaker to prevent LLM hallucinations.
-* Enterprise Security & Observability: Out-of-the-box input/output sanitization filters combined with dynamic token cost-tracking per evaluation cycle.
+- Context-Driven Design: The system's rules, agents, and tool signatures are explicitly declared in Markdown specifications (CONTEXT.md, AGENTS.md, SKILLS.md) before implementation, ensuring high alignment and minimal token waste.
+- Surgical Code Forensics: Rather than saturating context windows with whole source files, specialized tools target exact line ranges extracted from stack traces.
+- Deterministic Quality Gates: An internal Document Grader evaluates context relevance before generation, applying a hard circuit-breaker to prevent LLM hallucinations.
+- Enterprise Security & Observability: Out-of-the-box input/output sanitization filters combined with dynamic token cost-tracking per evaluation cycle.
 
 ## Project Structure
 

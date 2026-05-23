@@ -13,20 +13,20 @@ Always design systems in language-natural specifications before producing runtim
 
 ## 2. Token Efficiency & Context Window Hygiene
 
-* **Never dump entire codebases or logs into an LLM context window.** It increases financial overhead, drives up latency, and triggers the "lost in the middle" retrieval phenomenon.
-* **Implement Chunking and Reranking:** Always use keyword/vector retrieval combinations followed by a Cross-Encoder reranker to pass only the most contextually relevant tokens.
-* **Surgical Tooling:** Build specific tools (e.g., file readers targeting exact lines rather than whole files).
+- **Never dump entire codebases or logs into an LLM context window.** It increases financial overhead, drives up latency, and triggers the "lost in the middle" retrieval phenomenon.
+- **Implement Chunking and Reranking:** Always use keyword/vector retrieval combinations followed by a Cross-Encoder reranker to pass only the most contextually relevant tokens.
+- **Surgical Tooling:** Build specific tools (e.g., file readers targeting exact lines rather than whole files).
 
 ## 3. Determinism Over Stochastic Chaos
 
 LLMs are inherently non-deterministic. AI Engineering frameworks must wrap models in deterministic software constraints:
 
-* **Structured Inputs/Outputs:** Utilize validation tools like Pydantic or Instructor to guarantee that data moving between services conforms to explicit code schemas. If a model fails a schema validation, intercept it programmatically before it cascades.
-* **State Machines Over Autonomous Loops:** Do not allow LLMs to autonomously decide when to call loops endlessly. Manage system states and agent step-transfers via predictable Python logic.
-* **Quality Gatekeeping (Graders):** Implement programmatic assertions or narrow binary LLM checkpoints to validate the quality of context data before letting a main agent synthesize answers.
+- **Structured Inputs/Outputs:** Utilize validation tools like Pydantic or Instructor to guarantee that data moving between services conforms to explicit code schemas. If a model fails a schema validation, intercept it programmatically before it cascades.
+- **State Machines Over Autonomous Loops:** Do not allow LLMs to autonomously decide when to call loops endlessly. Manage system states and agent step-transfers via predictable Python logic.
+- **Quality Gatekeeping (Graders):** Implement programmatic assertions or narrow binary LLM checkpoints to validate the quality of context data before letting a main agent synthesize answers.
 
 ## 4. The Golden Dataset Mandate
 
-* You cannot improve what you do not measure. Prompt adjustments designed to fix one edge case frequently break three others.
-* Maintain a static **Golden Dataset** representing production problems.
-* Run evaluation scripts quantitatively before merging any prompt or code change to verify that accuracy, groundedness, and retrieval hit-rates remain stable or improve.
+- You cannot improve what you do not measure. Prompt adjustments designed to fix one edge case frequently break three others.
+- Maintain a static **Golden Dataset** representing production problems.
+- Run evaluation scripts quantitatively before merging any prompt or code change to verify that accuracy, groundedness, and retrieval hit-rates remain stable or improve.

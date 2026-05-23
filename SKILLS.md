@@ -8,9 +8,9 @@ This document details the functional contracts for all tools and programmatic ca
 
 ### 1.1 `Search_Historical_Bugs`
 
-* **Description:** Performs a hybrid search (semantic vector embedding + keyword BM25) across historical bug records, closed issues, and past post-mortems to identify duplicate regressions.
+- **Description:** Performs a hybrid search (semantic vector embedding + keyword BM25) across historical bug records, closed issues, and past post-mortems to identify duplicate regressions.
 
-* **Input Schema (JSON):**
+- **Input Schema (JSON):**
 
 ```json
   {
@@ -20,7 +20,7 @@ This document details the functional contracts for all tools and programmatic ca
   }
 ```
 
-* **Output Schema (JSON):**
+- **Output Schema (JSON):**
 
 ```json
 {
@@ -35,13 +35,13 @@ This document details the functional contracts for all tools and programmatic ca
 }
 ```
 
-* **Boundary Rules**: If the highest similarity score is below 0.70, the skill must return an empty list, signaling to the agent that this is a net-new issue.
+- **Boundary Rules**: If the highest similarity score is below 0.70, the skill must return an empty list, signaling to the agent that this is a net-new issue.
 
 ### 1.2 Rerank_Context_Documents`Code_Search_Vector_Retrieval`
 
-* **Description**: Takes a raw list of retrieved historical documents and reranks them using a Cross-Encoder model to maximize contextual relevance against the active stack trace.
+- **Description**: Takes a raw list of retrieved historical documents and reranks them using a Cross-Encoder model to maximize contextual relevance against the active stack trace.
 
-* **Input Schema (JSON)**:
+- **Input Schema (JSON)**:
 
 ```json
 {
@@ -50,7 +50,7 @@ This document details the functional contracts for all tools and programmatic ca
 }
 ```
 
-* **Output Schema (JSON)**:
+- **Output Schema (JSON)**:
 
 ```json
 {
@@ -63,9 +63,9 @@ This document details the functional contracts for all tools and programmatic ca
 
 ### 2.1 Locate_Target_Files
 
-* **Description**: Searches the local repository workspace for source code filenames or module paths mentioned in the raw error log or stack trace.
+- **Description**: Searches the local repository workspace for source code filenames or module paths mentioned in the raw error log or stack trace.
 
-* **Input Schema (JSON)**:
+- **Input Schema (JSON)**:
 
 ```json
 {
@@ -74,7 +74,7 @@ This document details the functional contracts for all tools and programmatic ca
 }
 ```
 
-* **Output Schema (JSON):**
+- **Output Schema (JSON):**
 
 ```json
 {
@@ -84,9 +84,9 @@ This document details the functional contracts for all tools and programmatic ca
 
 ### 2.2 Read_Code_Block_Surgically
 
-* **Description**: Reads an exact line range of a verified source code file. This prevents context window saturation by keeping file reads precise.
+- **Description**: Reads an exact line range of a verified source code file. This prevents context window saturation by keeping file reads precise.
 
-* **Input Schema (JSON)*:
+- **Input Schema (JSON)*:
 
 ```json
 {
@@ -96,7 +96,7 @@ This document details the functional contracts for all tools and programmatic ca
 }
 ```
 
-* **Output Schema (JSON)**:
+- **Output Schema (JSON)**:
 
 ```json
 {
@@ -106,15 +106,15 @@ This document details the functional contracts for all tools and programmatic ca
 }
 ```
 
-* **Boundary Rules**: Cannot read more than 200 lines of code in a single execution. Requests exceeding this threshold must be truncated and flagged.
+- **Boundary Rules**: Cannot read more than 200 lines of code in a single execution. Requests exceeding this threshold must be truncated and flagged.
 
 ## 3. Utility & Optimization Skills (skills/utilities)
 
 ### 3.1 Query_Rewriter_Transformer
 
-* **Description**: Strips infrastructure noise (timestamps, thread IDs, memory addresses, PIDs) from raw stack traces to generate a clean, normalized error signature optimized for vector DB lookups.
+- **Description**: Strips infrastructure noise (timestamps, thread IDs, memory addresses, PIDs) from raw stack traces to generate a clean, normalized error signature optimized for vector DB lookups.
 
-* **Input Schema (JSON)**:
+- **Input Schema (JSON)**:
 
 ```json
 {
@@ -122,7 +122,7 @@ This document details the functional contracts for all tools and programmatic ca
 }
 ```
 
-* **Output Schema (JSON)**:
+- **Output Schema (JSON)**:
 
 ```json
 {
@@ -133,9 +133,9 @@ This document details the functional contracts for all tools and programmatic ca
 
 ### 3.2 Check_Semantic_Cache
 
-* **Description**: Queries an in-memory Redis or local cache layer using vector distance to determine if an identical or highly similar error signature was fully diagnosed within the last 24 hours.
+- **Description**: Queries an in-memory Redis or local cache layer using vector distance to determine if an identical or highly similar error signature was fully diagnosed within the last 24 hours.
 
-* Input Schema (JSON):
+- Input Schema (JSON):
 
 ```json
 JSON
@@ -144,7 +144,7 @@ JSON
 }
 ```
 
-* **Output Schema (JSON)**:
+- **Output Schema (JSON)**:
 
 ```json
 {
@@ -157,5 +157,5 @@ JSON
 
 Every skill execution must adhere to a strict error-handling protocol:
 
-* **Timeout Threshold**: No external skill execution (DB lookup, file system read) can exceed a hard limit of 5000ms.
-* **Graceful Failures**: If a skill encounters an infrastructural failure (e.g., Vector DB connection dropped), it must return a structured JSON response containing {"error": "SERVICE_UNAVAILABLE", "fallback_action": "CONTINUE_WITHOUT_CONTEXT"} instead of raising unhandled exceptions that crash the agent loop.
+- **Timeout Threshold**: No external skill execution (DB lookup, file system read) can exceed a hard limit of 5000ms.
+- **Graceful Failures**: If a skill encounters an infrastructural failure (e.g., Vector DB connection dropped), it must return a structured JSON response containing {"error": "SERVICE_UNAVAILABLE", "fallback_action": "CONTINUE_WITHOUT_CONTEXT"} instead of raising unhandled exceptions that crash the agent loop.
