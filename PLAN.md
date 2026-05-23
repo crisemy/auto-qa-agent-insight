@@ -4,11 +4,11 @@ This tracking document outlines the step-by-step execution plan for building the
 
 ## Phase 1: Foundations & Infrastructure (Week 1)
 
-- [ ] Initialize Git repository and verify directory skeleton structure.
-- [ ] Set up `pyproject.toml` with strict dependencies (`fastapi`, `pydantic`, `langchain-core`).
-- [ ] Implement `app/config.py` using Pydantic Settings to handle environment variables safely.
-- [ ] Design structural data contracts in `app/models.py` (schemas for raw bug logs, triage results, and diagnostics).
-- [ ] Build a basic FastAPI entry point (`app/main.py`) with a `/health` check endpoint.
+- [x] Initialize Git repository and verify directory skeleton structure.
+- [x] Set up `pyproject.toml` with strict dependencies (`fastapi`, `pydantic`, `langchain-core`).
+- [x] Implement `app/config.py` using Pydantic Settings to handle environment variables safely.
+- [x] Design structural data contracts in `app/models.py` (schemas for raw bug logs, triage results, and diagnostics).
+- [x] Build a basic FastAPI entry point (`app/main.py`) with a `/health` check endpoint.
 
 ## Phase 2: Core Retrieval & Processing (Week 2)
 
