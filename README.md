@@ -110,7 +110,7 @@ uv run python3 evaluation/offline_eval.py
 
 Expected output:
 
-```
+```bash
   Total cases:  10
   Passed:       10
   Pass rate:    100%
@@ -156,7 +156,7 @@ docker compose up --build
 ## Project Specification Documents
 
 | Document | Purpose |
-|----------|---------|
+| ---------- | --------- |
 | `CONTEXT.md` | Business domain, glossary, success criteria |
 | `AGENTS.md` | Agent personas, system prompts, capability contracts |
 | `SKILLS.md` | Input/output JSON schemas for every tool |
