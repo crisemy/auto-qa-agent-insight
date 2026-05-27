@@ -1,3 +1,8 @@
+from app.agents.grader_agent import grade
+from app.agents.rca_agent import run as rca_run
+from app.agents.remediation_agent import run as remediation_run
+from app.agents.triage_agent import run as triage_run
+from app.components.hybrid_retriever import hybrid_search
 from app.models import (
     EnrichedInsightReport,
     InputGuardResult,
@@ -7,12 +12,6 @@ from app.models import (
 )
 from app.security.input_guard import inspect
 from app.security.output_filter import validate as filter_output
-from app.agents.triage_agent import run as triage_run
-from app.agents.rca_agent import run as rca_run
-from app.agents.remediation_agent import run as remediation_run
-from app.agents.grader_agent import grade
-from app.components.hybrid_retriever import hybrid_search
-from app.components.reranker import rerank
 
 
 def process(report: RawBugReport) -> EnrichedInsightReport | dict:
@@ -25,10 +24,15 @@ def process(report: RawBugReport) -> EnrichedInsightReport | dict:
 
     triage = triage_run(report)
 
+    target_subsystem = (
+        triage.failing_module.split("/")[0]
+        if triage.failing_module and triage.failing_module != "unknown"
+        else ""
+    )
     historical = hybrid_search(
         SearchHistoricalBugsInput(
             cleaned_error_signature=triage.normalized_signature,
-            target_subsystem=triage.failing_module,
+            target_subsystem=target_subsystem,
             limit=3,
         )
     )
@@ -37,7 +41,7 @@ def process(report: RawBugReport) -> EnrichedInsightReport | dict:
         best = historical.matches[0]
         rca_result = None
         remediation = RemediationResult(
-            patch="",
+            patch=f"Historical match from {best.bug_id}: {best.historical_diagnostic}",
             explanation=f"Historical match found: {best.bug_id} — {best.historical_diagnostic}",
         )
     else:

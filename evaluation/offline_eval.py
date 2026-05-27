@@ -15,6 +15,27 @@ def _load_dataset() -> list[dict]:
         return json.load(f)
 
 
+def _seed_vector_store() -> None:
+    from app.components.vector_store import index_bugs, reset
+
+    reset()
+    dataset = _load_dataset()
+    bugs = []
+    for entry in dataset:
+        module = entry["expected"]["failing_module"]
+        subsystem = module.split("/")[0] if module and module != "unknown" else ""
+        bugs.append(
+            {
+                "bug_id": entry["id"],
+                "signature": entry["payload"],
+                "subsystem": subsystem,
+                "diagnostic": entry["expected"]["diagnostic_summary"],
+                "status": "RESOLVED",
+            }
+        )
+    index_bugs(bugs)
+
+
 def _score_module(predicted: str, expected: str) -> bool:
     if expected == "unknown":
         return True
@@ -22,6 +43,7 @@ def _score_module(predicted: str, expected: str) -> bool:
 
 
 def run_evaluation() -> dict:
+    _seed_vector_store()
     dataset = _load_dataset()
     results = []
 

@@ -2,10 +2,10 @@ import re
 
 from app.models import (
     CheckSemanticCacheInput,
-    RawBugReport,
     QueryRewriterInput,
-    TriageResult,
+    RawBugReport,
     Severity,
+    TriageResult,
 )
 from app.services.query_rewriter import query_rewriter
 from app.services.semantic_cache import lookup as cache_lookup

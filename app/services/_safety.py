@@ -17,12 +17,12 @@ def execute_with_safety(fn: Callable[[], T], label: str = "skill") -> T | dict:
         if hasattr(signal, "SIGALRM"):
             signal.signal(signal.SIGALRM, _timeout_handler)
             signal.alarm(max(1, _TIMEOUT_MS // 1000))
-        result = fn()
-        if hasattr(signal, "SIGALRM"):
-            signal.alarm(0)
-        return result
+        return fn()
     except (TimeoutError, FileNotFoundError, OSError, ConnectionError):
         return {
             "error": "SERVICE_UNAVAILABLE",
             "fallback_action": "CONTINUE_WITHOUT_CONTEXT",
         }
+    finally:
+        if hasattr(signal, "SIGALRM"):
+            signal.alarm(0)

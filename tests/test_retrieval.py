@@ -1,12 +1,13 @@
-from app.models import (
-    QueryRewriterInput,
-    SearchHistoricalBugsInput,
-    RerankContextDocumentsInput,
-    RerankDocument,
-)
-from app.services.query_rewriter import query_rewriter
+from app.components import vector_store
 from app.components.hybrid_retriever import hybrid_search
 from app.components.reranker import rerank
+from app.models import (
+    QueryRewriterInput,
+    RerankContextDocumentsInput,
+    RerankDocument,
+    SearchHistoricalBugsInput,
+)
+from app.services.query_rewriter import query_rewriter
 
 
 class TestQueryRewriter:
@@ -39,6 +40,34 @@ class TestQueryRewriter:
 
 
 class TestHybridSearch:
+    def setup_method(self) -> None:
+        vector_store.reset()
+        vector_store.index_bugs(
+            [
+                {
+                    "bug_id": "BUG-001",
+                    "signature": "ConnectionError timeout connecting to database",
+                    "subsystem": "database",
+                    "diagnostic": "Connection pool exhausted due to slow queries",
+                    "status": "RESOLVED",
+                },
+                {
+                    "bug_id": "BUG-002",
+                    "signature": "KeyError missing required field user_id in payload",
+                    "subsystem": "api-gateway",
+                    "diagnostic": "Request validation missing required field check",
+                    "status": "RESOLVED",
+                },
+                {
+                    "bug_id": "BUG-003",
+                    "signature": "TypeError unsupported operand type for NoneType",
+                    "subsystem": "worker",
+                    "diagnostic": "Null propagation from uninitialized config value",
+                    "status": "UNRESOLVED",
+                },
+            ]
+        )
+
     def test_returns_matching_bugs(self):
         result = hybrid_search(
             SearchHistoricalBugsInput(

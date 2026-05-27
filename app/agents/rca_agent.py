@@ -1,10 +1,10 @@
+from app.agents.tools.code_search import locate_files, read_block
 from app.models import (
     LocateTargetFilesInput,
-    ReadCodeBlockSurgicallyInput,
     RcaResult,
+    ReadCodeBlockSurgicallyInput,
     TriageResult,
 )
-from app.agents.tools.code_search import locate_files, read_block
 
 
 def run(triage: TriageResult) -> RcaResult:

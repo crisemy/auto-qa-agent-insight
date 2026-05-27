@@ -1,14 +1,17 @@
-from app.models import (
-    RawBugReport,
-    TriageResult,
-    Severity,
-    RcaResult,
-    CheckSemanticCacheInput,
-)
-from app.agents.triage_agent import run as triage_run
+import json
+from unittest.mock import patch
+
+from app.agents.grader_agent import grade
 from app.agents.rca_agent import run as rca_run
 from app.agents.remediation_agent import run as remediation_run
-from app.agents.grader_agent import grade
+from app.agents.triage_agent import run as triage_run
+from app.models import (
+    CheckSemanticCacheInput,
+    RawBugReport,
+    RcaResult,
+    Severity,
+    TriageResult,
+)
 from app.services.semantic_cache import lookup
 
 
@@ -55,7 +58,18 @@ class TestRcaAgent:
 
 
 class TestRemediationAgent:
-    def test_generates_patch(self):
+    @patch("app.agents.remediation_agent.call_llm")
+    def test_generates_patch(self, mock_call_llm):
+        mock_call_llm.return_value = json.dumps({
+            "patch": (
+                "--- a/app/services/db.py\n"
+                "+++ b/app/services/db.py\n"
+                "@@ -42,1 +42,1 @@\n"
+                "-connect()\n"
+                "+if connection is not None: connect()"
+            ),
+            "explanation": "Added null guard before connection call",
+        })
         rca = RcaResult(
             file_path="app/services/db.py",
             line_number=42,
@@ -64,12 +78,14 @@ class TestRemediationAgent:
         )
         result = remediation_run(rca)
         assert result.patch
-        assert result.explanation
         assert "db.py" in result.patch
+        assert "null guard" in result.explanation
 
 
 class TestGraderAgent:
-    def test_relevant_when_tokens_overlap(self):
+    @patch("app.agents.grader_agent.call_llm")
+    def test_relevant_when_tokens_overlap(self, mock_call_llm):
+        mock_call_llm.return_value = '{"relevance_score": 0.85, "is_relevant": true}'
         triage = TriageResult(
             severity=Severity.major,
             failing_module="app/db.py",
@@ -84,8 +100,11 @@ class TestGraderAgent:
         )
         result = grade(triage, rca)
         assert result.is_relevant is True
+        assert result.relevance_score == 0.85
 
-    def test_irrelevant_when_no_overlap(self):
+    @patch("app.agents.grader_agent.call_llm")
+    def test_irrelevant_when_no_overlap(self, mock_call_llm):
+        mock_call_llm.return_value = '{"relevance_score": 0.15, "is_relevant": false}'
         triage = TriageResult(
             severity=Severity.major,
             failing_module="app/db.py",
@@ -100,6 +119,7 @@ class TestGraderAgent:
         )
         result = grade(triage, rca)
         assert result.is_relevant is False
+        assert result.relevance_score == 0.15
 
 
 class TestSemanticCache:
