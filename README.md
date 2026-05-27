@@ -7,9 +7,11 @@ An enterprise-grade, production-ready AI Engineering framework designed to autom
 The framework avoids fragile, unstructured conversational loops by implementing a deterministic, sequential multi-agent processing pipeline protected by security and quality guardrails.
 
 ```text
-[Raw Bug Report] -> [Input Guard] -> [Query Rewriter] -> [FAISS Vector Search + BM25 Fallback] -> [Rerank]
-                                                                    │
+[Raw Bug Report] -> [Input Guard] -> [Query Rewriter] -> [Semantic Cache (Redis)] -?-> [FAISS Vector Search + BM25 Fallback] -> [Rerank]
+                                                                                          │ (cache miss)
 [Enriched Report] <- [Output Filter] <- [Document Grader] <- [Code Forensics Agent]
+       │
+       └──> [Cache Store (Redis, 24h TTL)]
 ```
 
 ### Vector Store (FAISS)
@@ -37,7 +39,7 @@ auto-qa-agent-insights/
 │   │   └── reranker.py         # Cross-encoder context reranking (SKILLS.md §1.2)
 │   ├── services/
 │   │   ├── query_rewriter.py   # Strips noise from raw logs (SKILLS.md §3.1)
-│   │   ├── semantic_cache.py   # Cache lookup stub (SKILLS.md §3.2)
+│   │   ├── semantic_cache.py   # Redis-backed cache with vector distance (SKILLS.md §3.2)
 │   │   └── query_router.py     # State machine connecting agents (AGENTS.md §5)
 │   ├── agents/
 │   │   ├── triage_agent.py     # Severity classification, module extraction
@@ -75,6 +77,7 @@ auto-qa-agent-insights/
 
 - Python >= 3.11
 - pip or uv
+- Redis 7+ (or `docker compose up redis`)
 
 ## Quick Start
 
@@ -96,6 +99,7 @@ cp .env.example .env
 #   ENVIRONMENT=development
 #   OPENAI_API_KEY=your_key_here
 #   LLM_MODEL=gpt-4o-mini
+#   REDIS_URL=redis://localhost:6379/0
 ```
 
 ### 3. Run Unit Tests (25 tests)

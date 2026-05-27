@@ -57,10 +57,10 @@ Goal: Replace all stubs and simulated components with real infrastructure — ve
 
 ### Task 5.3 — Persistent Semantic Cache
 
-- [ ] Replace the stub `semantic_cache.py` with a real Redis-backed cache (using `redis-py`).
-- [ ] On cache write: store normalized_signature → full EnrichedInsightReport with a 24-hour TTL.
-- [ ] On cache read: compute vector distance between incoming signature and cached keys; return report if distance < threshold.
-- [ ] Fall back to `CONTINUE_WITHOUT_CONTEXT` if Redis is unreachable (SKILLS.md §4).
+- [x] Replace the stub `semantic_cache.py` with a real Redis-backed cache (using `redis-py`).
+- [x] On cache write: store normalized_signature → full EnrichedInsightReport with a 24-hour TTL.
+- [x] On cache read: compute vector distance between incoming signature and cached keys; return report if distance < threshold.
+- [x] Fall back to `CONTINUE_WITHOUT_CONTEXT` if Redis is unreachable (SKILLS.md §4).
 
 ### Task 5.4 — CI/CD Pipeline
 
