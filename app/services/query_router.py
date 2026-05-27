@@ -12,6 +12,7 @@ from app.models import (
 )
 from app.security.input_guard import inspect
 from app.security.output_filter import validate as filter_output
+from app.services.semantic_cache import store as cache_store
 
 
 def process(report: RawBugReport) -> EnrichedInsightReport | dict:
@@ -72,5 +73,7 @@ def process(report: RawBugReport) -> EnrichedInsightReport | dict:
             "error": "OUTPUT_REJECTED",
             "issues": filter_result.issues,
         }
+
+    cache_store(triage.normalized_signature, report_out)
 
     return report_out

@@ -114,6 +114,8 @@ class SemanticCacheEntry(BaseModel):
 class CheckSemanticCacheOutput(BaseModel):
     cache_hit: bool
     cached_report: str | None = None
+    error: str | None = None
+    fallback_action: str | None = None
 
 
 class SkillError(BaseModel):

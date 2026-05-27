@@ -1,6 +1,8 @@
 import json
 from unittest.mock import patch
 
+import numpy as np
+
 from app.agents.grader_agent import grade
 from app.agents.rca_agent import run as rca_run
 from app.agents.remediation_agent import run as remediation_run
@@ -123,7 +125,61 @@ class TestGraderAgent:
 
 
 class TestSemanticCache:
-    def test_returns_no_hit_by_default(self):
+    @patch("app.services.semantic_cache._get_redis")
+    @patch("app.services.semantic_cache._get_embedder")
+    def test_returns_no_hit_on_cache_miss(self, mock_embedder, mock_redis):
+        mock_redis.return_value.scan.return_value = (0, [])
+        mock_embedder.return_value.encode.return_value = [[0.1, 0.2, 0.3]]
         result = lookup(CheckSemanticCacheInput(normalized_signature="test error"))
         assert result.cache_hit is False
         assert result.cached_report is None
+
+    @patch("app.services.semantic_cache._get_redis")
+    @patch("app.services.semantic_cache._get_embedder")
+    def test_returns_cache_hit_when_distance_below_threshold(self, mock_embedder, mock_redis):
+        mock_embedder_instance = mock_embedder.return_value
+        mock_embedder_instance.encode.return_value = [[0.1, 0.2, 0.3]]
+        mock_redis_instance = mock_redis.return_value
+        mock_redis_instance.scan.return_value = (0, ["semantic_cache:abc123"])
+        mock_redis_instance.pipeline.return_value.execute.return_value = [
+            (
+                '{"signature": "old error", "embedding": [0.1, 0.2, 0.3],'
+                ' "report": "cached_report_data"}'
+            )
+        ]
+        result = lookup(CheckSemanticCacheInput(normalized_signature="new error"))
+        assert result.cache_hit is True
+        assert result.cached_report == "cached_report_data"
+
+    @patch("app.services.semantic_cache._get_redis")
+    def test_falls_back_on_redis_unreachable(self, mock_redis):
+        mock_redis.return_value.scan.side_effect = ConnectionError("Redis down")
+        result = lookup(CheckSemanticCacheInput(normalized_signature="test error"))
+        assert result.cache_hit is False
+        assert result.error == "SERVICE_UNAVAILABLE"
+        assert result.fallback_action == "CONTINUE_WITHOUT_CONTEXT"
+
+    @patch("app.services.semantic_cache._get_redis")
+    @patch("app.services.semantic_cache._get_embedder")
+    def test_store_writes_to_redis_with_ttl(self, mock_embedder, mock_redis):
+        from app.models import EnrichedInsightReport, Severity, TriageResult
+        mock_embedder_instance = mock_embedder.return_value
+        mock_embedder_instance.encode.return_value = np.array(
+            [[0.1, 0.2, 0.3]], dtype=np.float32
+        )
+        mock_redis_instance = mock_redis.return_value
+        report = EnrichedInsightReport(
+            raw_signature="sig",
+            triage=TriageResult(
+                severity=Severity.major,
+                failing_module="app/test.py",
+                normalized_signature="sig",
+                exception_type="TypeError",
+            ),
+        )
+        from app.services.semantic_cache import store
+        store("test signature", report)
+        mock_redis_instance.setex.assert_called_once()
+        args, _ = mock_redis_instance.setex.call_args
+        assert args[1] == 86400
+        assert "sig" in args[2]
