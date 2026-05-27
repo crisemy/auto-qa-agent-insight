@@ -39,21 +39,21 @@ Goal: Replace all stubs and simulated components with real infrastructure — ve
 
 ### Task 5.1 — FAISS Vector Store for Historical Bug Embeddings
 
-- [ ] Add `sentence-transformers` and `faiss-cpu` to `pyproject.toml`.
-- [ ] Implement `app/components/vector_store.py` with:
+- [x] Add `sentence-transformers` and `faiss-cpu` to `pyproject.toml`.
+- [x] Implement `app/components/vector_store.py` with:
   - `index_bugs(bugs)` — embeds bug signatures and stores in FAISS index.
   - `search(query, k)` — returns top-k similar bug IDs.
-- [ ] Seed the index with the 10 golden dataset entries on startup.
-- [ ] Replace in-memory search in `hybrid_retriever.py` with real FAISS vector search + BM25 keyword fallback.
-- [ ] Write tests in `tests/test_vector_store.py`.
+- [x] Seed the index with the 10 golden dataset entries on startup.
+- [x] Replace in-memory search in `hybrid_retriever.py` with real FAISS vector search + BM25 keyword fallback.
+- [x] Write tests in `tests/test_vector_store.py`.
 
 ### Task 5.2 — Live LLM Agent Inference
 
-- [ ] Add `openai` client to `app/services/llm_client.py` — reads `OPENAI_API_KEY` and `LLM_MODEL` from config.
-- [ ] Rewrite `grader_agent.py` to call the LLM with the agent's system prompt (from `AGENTS.md`) and the triage+RCA context, returning a relevance score via structured output.
-- [ ] Rewrite `remediation_agent.py` to call the LLM with the RCA diagnosis to generate a contextual code patch instead of the current template patch.
-- [ ] Implement `app/agents/tools/prompt_templates.py` to store all agent system prompts as constants (mirroring AGENTS.md verbatim).
-- [ ] Wire cost tracking into every LLM call using `app/observability/cost_tracker.py`.
+- [x] Add `openai` client to `app/services/llm_client.py` — reads `OPENAI_API_KEY` and `LLM_MODEL` from config.
+- [x] Rewrite `grader_agent.py` to call the LLM with the agent's system prompt (from `AGENTS.md`) and the triage+RCA context, returning a relevance score via structured output.
+- [x] Rewrite `remediation_agent.py` to call the LLM with the RCA diagnosis to generate a contextual code patch instead of the current template patch.
+- [x] Implement `app/agents/tools/prompt_templates.py` to store all agent system prompts as constants (mirroring AGENTS.md verbatim).
+- [x] Wire cost tracking into every LLM call using `app/observability/cost_tracker.py`.
 
 ### Task 5.3 — Persistent Semantic Cache
 

@@ -7,10 +7,14 @@ An enterprise-grade, production-ready AI Engineering framework designed to autom
 The framework avoids fragile, unstructured conversational loops by implementing a deterministic, sequential multi-agent processing pipeline protected by security and quality guardrails.
 
 ```text
-[Raw Bug Report] -> [Input Guard] -> [Query Rewriter] -> [Hybrid Search + Rerank]
+[Raw Bug Report] -> [Input Guard] -> [Query Rewriter] -> [FAISS Vector Search + BM25 Fallback] -> [Rerank]
                                                                     │
 [Enriched Report] <- [Output Filter] <- [Document Grader] <- [Code Forensics Agent]
 ```
+
+### Vector Store (FAISS)
+
+Historical bug records are indexed into a FAISS vector store on startup using `all-MiniLM-L6-v2` embeddings (384-dim). The `hybrid_retriever` performs semantic vector search as the primary retrieval strategy, falling back to BM25 keyword scoring when FAISS confidence is below 0.70. The index is seeded from `evaluation/golden_dataset.json` — 10 curated bug-diagnostic pairs.
 
 ## Key Architectural Pillars
 
@@ -28,7 +32,8 @@ auto-qa-agent-insights/
 │   ├── config.py               # Pydantic Settings (env vars)
 │   ├── models.py               # Strict Pydantic data schemas (SKILLS.md contracts)
 │   ├── components/
-│   │   ├── hybrid_retriever.py # Keyword + vector search (SKILLS.md §1.1)
+│   │   ├── vector_store.py     # FAISS vector index (sentence-transformers + faiss-cpu)
+│   │   ├── hybrid_retriever.py # FAISS + BM25 fallback search (SKILLS.md §1.1)
 │   │   └── reranker.py         # Cross-encoder context reranking (SKILLS.md §1.2)
 │   ├── services/
 │   │   ├── query_rewriter.py   # Strips noise from raw logs (SKILLS.md §3.1)
@@ -50,6 +55,7 @@ auto-qa-agent-insights/
 ├── observability/
 │   └── cost_tracker.py         # Token usage estimation & JSONL logging
 ├── tests/
+│   ├── test_vector_store.py    # FAISS vector store indexing & search tests
 │   ├── test_retrieval.py       # Rewriter, retriever, reranker tests
 │   ├── test_agents.py          # All 4 agent runtime tests
 │   └── test_security.py        # Input guard & output filter tests

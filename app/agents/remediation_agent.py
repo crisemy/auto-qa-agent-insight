@@ -1,40 +1,27 @@
+import json
+
+from app.agents.tools.prompt_templates import REMEDIATION_SYSTEM_PROMPT
 from app.models import RcaResult, RemediationResult
+from app.services.llm_client import call_llm
 
 
 def run(rca: RcaResult) -> RemediationResult:
-    patch = _generate_patch(rca)
-    explanation = _generate_explanation(rca)
-
-    return RemediationResult(
-        patch=patch,
-        explanation=explanation,
+    user_message = (
+        "Generate a code patch to fix the root cause described below.\n\n"
+        f"RCA Diagnosis:\n{json.dumps(rca.model_dump(), indent=2)}\n\n"
+        "Return a JSON object with exactly two fields:\n"
+        '  "patch": a string containing the unified diff patch\n'
+        '  "explanation": a brief technical explanation of why this fix is safe\n'
+        "Do not include any other text."
     )
 
+    try:
+        response_text = call_llm(REMEDIATION_SYSTEM_PROMPT, user_message)
+        result = json.loads(response_text)
+        patch = result.get("patch", "")
+        explanation = result.get("explanation", "")
+    except (json.JSONDecodeError, TypeError, ValueError, RuntimeError):
+        patch = ""
+        explanation = "LLM call failed — unable to generate patch"
 
-def _generate_patch(rca: RcaResult) -> str:
-    if "Null" in rca.failure_mechanism or "None" in rca.failure_mechanism:
-        return (
-            f"--- a/{rca.file_path}\n"
-            f"+++ b/{rca.file_path}\n"
-            f"@@ -{rca.line_number},1 +{rca.line_number},1 @@\n"
-            f"-{rca.failure_mechanism}\n"
-            f"+if value is not None:\n"
-            f"+    # handle {rca.failure_mechanism}\n"
-        )
-
-    return (
-        f"--- a/{rca.file_path}\n"
-        f"+++ b/{rca.file_path}\n"
-        f"@@ -{rca.line_number},1 +{rca.line_number},1 @@\n"
-        f"- # TODO: fix {rca.failure_mechanism}\n"
-        f"+ # patched {rca.failure_mechanism}\n"
-    )
-
-
-def _generate_explanation(rca: RcaResult) -> str:
-    return (
-        f"Root cause identified at {rca.file_path}:{rca.line_number} "
-        f"in `{rca.function_name}`. "
-        f"Failure mechanism: {rca.failure_mechanism}. "
-        f"Patch adds a guard to prevent the unhandled case."
-    )
+    return RemediationResult(patch=patch, explanation=explanation)

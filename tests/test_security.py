@@ -1,4 +1,4 @@
-from app.models import RawBugReport, EnrichedInsightReport, TriageResult, Severity
+from app.models import EnrichedInsightReport, RawBugReport, Severity, TriageResult
 from app.security.input_guard import inspect
 from app.security.output_filter import validate
 
