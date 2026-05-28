@@ -216,4 +216,4 @@ curl "localhost:8000/history?limit=5"
 
 ## Regression Test and E2E Tests
 
-![QA Architect header](./images/auto-qa-agent-insights-header.png)
+![Regression Test and E2E Tests](./images/auto-qa-agent-insight-regression-e2e-testing.png)
