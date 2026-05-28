@@ -7,6 +7,10 @@ T = TypeVar("T")
 
 _TIMEOUT_MS = 5000
 
+_SIGALRM: int = getattr(signal, "SIGALRM", 0)
+_alarm: Any = getattr(signal, "alarm", None)
+_SIGALRM_SUPPORTED: bool = hasattr(signal, "SIGALRM") and hasattr(signal, "alarm")
+
 
 def _timeout_handler(signum: int, frame: object) -> None:
     raise TimeoutError("Skill execution timed out")
@@ -14,9 +18,9 @@ def _timeout_handler(signum: int, frame: object) -> None:
 
 def execute_with_safety(fn: Callable[[], T], label: str = "skill") -> T | dict[str, Any]:
     try:
-        if hasattr(signal, "SIGALRM"):
-            signal.signal(signal.SIGALRM, _timeout_handler)
-            signal.alarm(max(1, _TIMEOUT_MS // 1000))  # type: ignore
+        if _SIGALRM_SUPPORTED:
+            signal.signal(_SIGALRM, _timeout_handler)
+            _alarm(max(1, _TIMEOUT_MS // 1000))
         return fn()
     except (TimeoutError, FileNotFoundError, OSError, ConnectionError):
         return {
@@ -24,5 +28,5 @@ def execute_with_safety(fn: Callable[[], T], label: str = "skill") -> T | dict[s
             "fallback_action": "CONTINUE_WITHOUT_CONTEXT",
         }
     finally:
-        if hasattr(signal, "SIGALRM"):
-            signal.alarm(0)  # type: ignore
+        if _SIGALRM_SUPPORTED:
+            _alarm(0)
