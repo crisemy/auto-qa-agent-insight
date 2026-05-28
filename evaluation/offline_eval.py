@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 from app.models import RawBugReport
@@ -121,3 +122,5 @@ def print_report(report: dict) -> None:
 if __name__ == "__main__":
     report = run_evaluation()
     print_report(report)
+    if report["pass_rate"] < 1.0:
+        sys.exit(1)
