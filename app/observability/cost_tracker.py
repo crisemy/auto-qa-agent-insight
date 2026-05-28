@@ -27,7 +27,7 @@ def log_run(
     duration_ms: float,
     model: str = "",
     cost_usd: float = 0.0,
-) -> dict:
+) -> dict[str, Any]:
     _LOG_DIR.mkdir(parents=True, exist_ok=True)
 
     input_tokens = _estimate_tokens(input_text)

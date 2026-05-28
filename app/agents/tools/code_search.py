@@ -25,7 +25,7 @@ def read_block(params: ReadCodeBlockSurgicallyInput) -> ReadCodeBlockSurgicallyO
     if (end - start + 1) > _MAX_LINES:
         end = start + _MAX_LINES - 1
 
-    def _read():
+    def _read() -> list[str]:
         with open(params.file_path) as f:
             return f.readlines()
 
