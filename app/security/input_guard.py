@@ -3,7 +3,12 @@ import re
 from app.models import InputGuardResult, RawBugReport
 
 _INJECTION_PATTERNS = [
-    (re.compile(r"ignore\s+(all\s+)?(previous|prior)\s+(instructions|prompts?)", re.I), "ignore_previous_instructions"),
+    (
+        re.compile(
+            r"ignore\s+(all\s+)?(previous|prior)\s+(instructions|prompts?)", re.I
+        ),
+        "ignore_previous_instructions",
+    ),
     (re.compile(r"system\s*(prompt|message|instruction)", re.I), "system_prompt_override"),
     (re.compile(r"you\s+are\s+(now|not\s+an?\s+ai)", re.I), "role_switch"),
     (re.compile(r"<\|?(im_start|im_end|sys|user|assistant)\|?>", re.I), "special_token"),

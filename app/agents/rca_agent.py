@@ -40,7 +40,10 @@ def run(triage: TriageResult) -> RcaResult:
 
     error_desc = " ".join(
         w for w in triage.normalized_signature.lower().split()
-        if w not in ("a", "an", "the", "at", "in", "of", "to", ":", "-", "|", "error", "warning", "critical", "fatal")
+        if w not in (
+            "a", "an", "the", "at", "in", "of", "to",
+            ":", "-", "|", "error", "warning", "critical", "fatal",
+        )
     )[:80]
 
     if triage.exception_type:
