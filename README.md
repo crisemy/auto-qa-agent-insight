@@ -1,3 +1,5 @@
+![QA Architect header](./images/github-header.png)
+
 # Auto-QA Agent Insights
 
 An enterprise-grade, production-ready AI Engineering framework designed to automate software bug triage, root-cause analysis (RCA), and remediation proposals using Context-Driven Architecture.
@@ -60,7 +62,8 @@ auto-qa-agent-insights/
 │   ├── test_vector_store.py    # FAISS vector store indexing & search tests
 │   ├── test_retrieval.py       # Rewriter, retriever, reranker tests
 │   ├── test_agents.py          # All 4 agent runtime tests
-│   └── test_security.py        # Input guard & output filter tests
+│   ├── test_security.py        # Input guard & output filter tests
+│   └── test_api.py             # API endpoint integration tests
 ├── .github/
 │   └── workflows/
 │       ├── ci.yml              # Lint, typecheck, test, evaluate on push/PR
@@ -176,6 +179,31 @@ pytest tests/ -v
 uv run python3 evaluation/offline_eval.py
 ```
 
+## API Endpoints
+
+### `POST /analyze`
+
+Accepts a raw bug report and runs the full triage → RCA → remediation pipeline.
+
+```bash
+curl -X POST localhost:8000/analyze \
+  -H "Content-Type: application/json" \
+  -d '{"payload": "TypeError at app/models.py:42: unsupported operand type for NoneType"}'
+```
+
+**Response** (200): `EnrichedInsightReport` with triage, root-cause, and remediation.
+**Error** (422): Input rejected, insufficient context, or output filter failure.
+
+### `GET /history?limit=20`
+
+Returns recent cached analyses (Redis-backed, last 100 entries).
+
+```bash
+curl "localhost:8000/history?limit=5"
+```
+
+**Response** (200): `{"results": [...], "count": 5}`
+
 ## Project Specification Documents
 
 | Document | Purpose |
@@ -185,3 +213,7 @@ uv run python3 evaluation/offline_eval.py
 | `SKILLS.md` | Input/output JSON schemas for every tool |
 | `CORE.md` | Engineering methodology (CDD, determinism, golden dataset) |
 | `PLAN.md` | Iteration roadmap with task tracking |
+
+## Regression Test and E2E Tests
+
+![QA Architect header](./images/auto-qa-agent-insights-header.png)

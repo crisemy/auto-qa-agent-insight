@@ -73,10 +73,10 @@ Goal: Replace all stubs and simulated components with real infrastructure — ve
 
 ### Task 5.5 — API Endpoints for Direct Submission
 
-- [ ] Add `POST /analyze` endpoint in `app/main.py` that accepts a raw bug report and returns `EnrichedInsightReport`.
-- [ ] Add `GET /history?limit=20` to return recent cached analyses.
-- [ ] Wire cost tracker to log every `/analyze` request.
-- [ ] Write integration tests in `tests/test_api.py`.
+- [x] Add `POST /analyze` endpoint in `app/main.py` that accepts a raw bug report and returns `EnrichedInsightReport`.
+- [x] Add `GET /history?limit=20` to return recent cached analyses.
+- [x] Wire cost tracker to log every `/analyze` request.
+- [x] Write integration tests in `tests/test_api.py`.
 
 ## Definition of Done (DoD) per Task
 
