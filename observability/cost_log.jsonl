@@ -1,0 +1,14 @@
+{"run_id": 1, "timestamp": "2026-05-28T13:26:01.983079+00:00", "input_tokens": 6, "output_tokens": 63, "total_tokens": 69, "duration_ms": 0.03, "model": "", "cost_usd": 0.0}
+{"run_id": 2, "timestamp": "2026-05-28T13:26:06.043635+00:00", "input_tokens": 9, "output_tokens": 21, "total_tokens": 30, "duration_ms": 0.03, "model": "", "cost_usd": 0.0}
+{"run_id": 3, "timestamp": "2026-05-28T13:26:06.051953+00:00", "input_tokens": 7, "output_tokens": 24, "total_tokens": 31, "duration_ms": 0.03, "model": "", "cost_usd": 0.0}
+{"run_id": 4, "timestamp": "2026-05-28T13:26:10.111550+00:00", "input_tokens": 1, "output_tokens": 24, "total_tokens": 25, "duration_ms": 4048.57, "model": "", "cost_usd": 0.0}
+{"run_id": 1, "timestamp": "2026-05-28T13:26:33.642253+00:00", "input_tokens": 6, "output_tokens": 63, "total_tokens": 69, "duration_ms": 0.05, "model": "", "cost_usd": 0.0}
+{"run_id": 2, "timestamp": "2026-05-28T13:26:37.701256+00:00", "input_tokens": 9, "output_tokens": 21, "total_tokens": 30, "duration_ms": 0.03, "model": "", "cost_usd": 0.0}
+{"run_id": 3, "timestamp": "2026-05-28T13:26:37.712255+00:00", "input_tokens": 7, "output_tokens": 24, "total_tokens": 31, "duration_ms": 0.04, "model": "", "cost_usd": 0.0}
+{"run_id": 1, "timestamp": "2026-05-28T13:27:05.312395+00:00", "input_tokens": 6, "output_tokens": 63, "total_tokens": 69, "duration_ms": 0.03, "model": "", "cost_usd": 0.0}
+{"run_id": 2, "timestamp": "2026-05-28T13:27:09.366440+00:00", "input_tokens": 9, "output_tokens": 21, "total_tokens": 30, "duration_ms": 0.05, "model": "", "cost_usd": 0.0}
+{"run_id": 3, "timestamp": "2026-05-28T13:27:09.372441+00:00", "input_tokens": 7, "output_tokens": 24, "total_tokens": 31, "duration_ms": 0.04, "model": "", "cost_usd": 0.0}
+{"run_id": 1, "timestamp": "2026-05-28T13:58:31.016373+00:00", "input_tokens": 6, "output_tokens": 63, "total_tokens": 69, "duration_ms": 0.04, "model": "", "cost_usd": 0.0}
+{"run_id": 2, "timestamp": "2026-05-28T13:58:35.078179+00:00", "input_tokens": 9, "output_tokens": 21, "total_tokens": 30, "duration_ms": 0.03, "model": "", "cost_usd": 0.0}
+{"run_id": 3, "timestamp": "2026-05-28T13:58:35.084182+00:00", "input_tokens": 7, "output_tokens": 24, "total_tokens": 31, "duration_ms": 0.04, "model": "", "cost_usd": 0.0}
+{"run_id": 1, "timestamp": "2026-05-28T14:02:48.897522+00:00", "input_tokens": 17, "output_tokens": 125, "total_tokens": 142, "duration_ms": 10815.42, "model": "", "cost_usd": 0.0}
