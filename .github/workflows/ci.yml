@@ -11,48 +11,48 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Sync dependencies
-        run: uv sync --dev
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
       - name: Lint
-        run: uv run ruff check .
+        run: ruff check .
 
   typecheck:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Sync dependencies
-        run: uv sync --dev
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
       - name: Typecheck
-        run: uv run mypy app/
+        run: mypy app/
 
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Sync dependencies
-        run: uv sync --dev
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
       - name: Test
-        run: uv run pytest tests/ -v
+        run: pytest tests/ -v
 
   evaluate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Sync dependencies
-        run: uv sync --dev
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
       - name: Copy .env.example to .env
         run: cp .env.example .env
       - name: Evaluate
-        run: uv run python3 evaluation/offline_eval.py
+        run: python3 evaluation/offline_eval.py
