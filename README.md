@@ -217,3 +217,18 @@ curl "localhost:8000/history?limit=5"
 ## Regression Test and E2E Tests
 
 ![Regression Test and E2E Tests](./images/auto-qa-agent-insight-regression-e2e-testing.png)
+
+## Author
+
+Cristian N.
+
+- QA Engineer with 20+ years of experience in software testing and automation.
+- MSc Candidate in Data Science & Artificial Intelligence.
+
+Research interests include:
+
+* Experimental QA engineering
+* QA Architecture
+* Reliability testing
+* AI-assisted quality assurance
+* Data-driven software stability analysis
