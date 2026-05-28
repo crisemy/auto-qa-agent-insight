@@ -1,3 +1,5 @@
+from typing import Any
+
 from app.agents.grader_agent import grade
 from app.agents.rca_agent import run as rca_run
 from app.agents.remediation_agent import run as remediation_run
@@ -15,7 +17,7 @@ from app.security.output_filter import validate as filter_output
 from app.services.semantic_cache import store as cache_store
 
 
-def process(report: RawBugReport) -> EnrichedInsightReport | dict:
+def process(report: RawBugReport) -> EnrichedInsightReport | dict[str, Any]:
     guard: InputGuardResult = inspect(report)
     if not guard.is_safe:
         return {

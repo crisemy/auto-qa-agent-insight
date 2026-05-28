@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -56,7 +57,7 @@ class SearchHistoricalBugsOutput(BaseModel):
 
 class RerankDocument(BaseModel):
     content: str
-    metadata: dict = {}
+    metadata: dict[str, Any] = {}
 
 
 class RerankContextDocumentsInput(BaseModel):

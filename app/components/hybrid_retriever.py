@@ -1,3 +1,5 @@
+from typing import Any
+
 from app.components import vector_store
 from app.models import (
     HistoricalBugMatch,
@@ -22,7 +24,7 @@ def _keyword_score(query_tokens: set[str], doc_tokens: list[str]) -> float:
 
 
 def _build_matches(
-    results: list[dict], limit: int
+    results: list[dict[str, Any]], limit: int
 ) -> list[HistoricalBugMatch]:
     return [
         HistoricalBugMatch(
@@ -54,7 +56,7 @@ def hybrid_search(params: SearchHistoricalBugsInput) -> SearchHistoricalBugsOutp
 
     query_tokens = set(_tokenize(params.cleaned_error_signature))
     registry = vector_store.get_registry()
-    scored: list[tuple[float, dict]] = []
+    scored: list[tuple[float, dict[str, Any]]] = []
 
     for bug in registry:
         if params.target_subsystem and params.target_subsystem != bug.get("subsystem", ""):

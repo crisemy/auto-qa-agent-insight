@@ -1,6 +1,7 @@
 import json
 import time
 from pathlib import Path
+from typing import Any
 
 import redis
 from fastapi import FastAPI, HTTPException, Query
@@ -60,7 +61,7 @@ async def seed_vector_store() -> None:
 
 
 @app.get("/health")
-async def health():
+async def health() -> dict[str, str]:
     return {"status": "ok", "environment": settings.environment}
 
 
@@ -84,7 +85,7 @@ async def analyze(report: RawBugReport) -> EnrichedInsightReport:
 
 
 @app.get("/history")
-async def history(limit: int = Query(20, ge=1, le=100)) -> dict:
+async def history(limit: int = Query(20, ge=1, le=100)) -> dict[str, Any]:
     try:
         r = _get_redis()
         entries = r.lrange("recent_analyses", 0, limit - 1)
