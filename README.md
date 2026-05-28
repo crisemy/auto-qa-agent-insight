@@ -61,6 +61,10 @@ auto-qa-agent-insights/
 │   ├── test_retrieval.py       # Rewriter, retriever, reranker tests
 │   ├── test_agents.py          # All 4 agent runtime tests
 │   └── test_security.py        # Input guard & output filter tests
+├── .github/
+│   └── workflows/
+│       ├── ci.yml              # Lint, typecheck, test, evaluate on push/PR
+│       └── publish.yml         # Build & publish to PyPI on tagged releases
 ├── CONTEXT.md                  # Business domain & glossary
 ├── AGENTS.md                   # Agent personas & system prompts
 ├── SKILLS.md                   # JSON contracts for every tool
@@ -161,6 +165,15 @@ curl localhost:8000/health
 ```bash
 cp .env.example .env
 docker compose up --build
+```
+
+### 8. Run CI Pipeline Locally (optional)
+
+```bash
+ruff check .
+mypy app/
+pytest tests/ -v
+uv run python3 evaluation/offline_eval.py
 ```
 
 ## Project Specification Documents

@@ -64,12 +64,12 @@ Goal: Replace all stubs and simulated components with real infrastructure — ve
 
 ### Task 5.4 — CI/CD Pipeline
 
-- [ ] Create `.github/workflows/ci.yml` with jobs:
+- [x] Create `.github/workflows/ci.yml` with jobs:
   - **lint** — `ruff check .`
   - **typecheck** — `mypy app/`
   - **test** — `pytest tests/ -v`
   - **evaluate** — `uv run python3 evaluation/offline_eval.py` (fails if < 100% pass rate)
-- [ ] Create `.github/workflows/publish.yml` to build and publish to PyPI on tagged releases.
+- [x] Create `.github/workflows/publish.yml` to build and publish to PyPI on tagged releases.
 
 ### Task 5.5 — API Endpoints for Direct Submission
 
