@@ -16,7 +16,7 @@ def execute_with_safety(fn: Callable[[], T], label: str = "skill") -> T | dict[s
     try:
         if hasattr(signal, "SIGALRM"):
             signal.signal(signal.SIGALRM, _timeout_handler)
-            signal.alarm(max(1, _TIMEOUT_MS // 1000))  # type: ignore[attr-defined]
+            signal.alarm(max(1, _TIMEOUT_MS // 1000))  # type: ignore
         return fn()
     except (TimeoutError, FileNotFoundError, OSError, ConnectionError):
         return {
@@ -25,4 +25,4 @@ def execute_with_safety(fn: Callable[[], T], label: str = "skill") -> T | dict[s
         }
     finally:
         if hasattr(signal, "SIGALRM"):
-            signal.alarm(0)  # type: ignore[attr-defined]
+            signal.alarm(0)  # type: ignore
